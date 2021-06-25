@@ -1,49 +1,29 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
-    <q-header class="no-shadow bg-gray-900">
-      <q-toolbar>
-        <q-btn
-          flat
-          dense
-          round
-          icon="menu"
-          aria-label="Menu"
-          @click="leftDrawerOpen = !leftDrawerOpen"
-        />
-
-        <q-toolbar-title>
-          Title
-        </q-toolbar-title>
-        
-      </q-toolbar>
-    </q-header>
-
-    <q-drawer
-      v-model="leftDrawerOpen"
-      show-if-above
-      bordered
-      content-class="bg-gray-900"
-      
-    >     
-    <ul class="text-gray-50 ">    
-    </ul>
-
-    </q-drawer>
-
+  <q-layout view="lHh Lpr lFf" class='bg-main' >
+    <navbar :screenWidth="windowWidth"></navbar>   
     <q-page-container>
-      <router-view  />
+      <router-view name="main" />
     </q-page-container>
   </q-layout>
 </template>
 
 <script>
+import Navbar from '../components/navbar.vue'
+
 export default {
   name: 'MainLayout',
+  components: { Navbar },
   data () {
     return {
-      leftDrawerOpen: false,      
+      leftDrawerOpen: false,   
+      windowWidth: window.innerWidth,    
     }
-  }
+  },
+  mounted() {        
+    window.onresize = () => {
+      this.windowWidth = window.innerWidth;
+    };      
+  },
 }
 </script>
 

@@ -1,5 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import manga from './actions/manga/index'
+import chapters from './actions/chapter/index'
 
 // import example from './module-example'
 
@@ -17,7 +19,8 @@ Vue.use(Vuex)
 export default function (/* { ssrContext } */) {
   const Store = new Vuex.Store({
     modules: {
-      // example
+      manga,
+      chapters,
     },
 
     // enable strict mode (adds overhead!)
