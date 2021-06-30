@@ -12,21 +12,19 @@
 
       <!--OPTIONS -->
       <div class=" flex items-center h-16">
-        <div v-if='navOptions.length > 0' >
-          <ul class="flex text-gray-50 ">
-            <li :key="option.name" v-for="option in navOptions" class=" flex items-center cursor-pointer border-b border-transparent hover:border-b-2 hover:border-yellow-400 m-6" > {{option.name}} </li>            
-          </ul>
-        </div>
-
-        <!-- search -->
-        <div class="relative grid self-center">
+        <div class="relative grid self-center" >
           <input
             type="text"
             class="p-2 pl-8 h-8 rounded border border-gray-200 bg-gray-200 focus:bg-white focus:outline-none focus:ring-2 focus:ring-yellow-600 focus:border-transparent w-64 lg:w-64 lg:bg-gray-200 lg:border-gray-200"
             placeholder="Search..."
             value=""
+            @keyup="callSearch($event)"
           />
+          <span v-if="loadingResults" class="material-icons w-4 h-4 absolute left-2.5 top-2 lg:text-black cursor-pointer" @click="closeResults()">
+            close
+          </span>
           <svg
+            v-else
             class="w-4 h-4 absolute left-2.5 top-2 lg:text-black"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -40,7 +38,31 @@
               d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
             />
           </svg>
-        </div>        
+
+          <div v-if="loadingResults">
+            <div class="h-96 overflow-auto w-82 bg-main absolute left-0 -bottom-auto mt-2 rounded-sm">
+              <div class="" :key='result.data.id' v-for="result in searchResults">
+                <router-link class="relative h-20 w-80 bg-gray-300 mt-1 mb-1 flex items-center cursor-pointer" :to="`/info/${result.data.id}`">
+                  <div class="h-full w-16 place-self-start bg-gray-800" >
+                    <img :src="result.cover" class="h-20 w-16" alt="">
+                  </div>
+                  <p class="font-light w-64 text-center">                  
+                    {{result.data.attributes.title.en }}            
+                  </p>
+                </router-link>
+              </div>                            
+            </div>
+          </div>
+        </div>  
+
+        <div v-if='navOptions.length > 0' >
+          <ul class="flex text-gray-50 ">
+            <li :key="option.name" v-for="option in navOptions" class="flex items-center cursor-pointer border-b border-transparent hover:border-b-2 hover:border-yellow-400 m-6" > {{option.name}} </li>            
+          </ul>
+        </div>
+
+        <!-- search -->
+              
       </div>
     </div>
 
@@ -69,6 +91,7 @@
             d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"
           />
         </svg>
+
         <div
           v-if="showMenu"
           class="absolute top-14 right-12 w-56 h-36 bg-gray-600 rounded grid"
@@ -90,6 +113,9 @@
 </template>
 
 <script>
+const _ = require('lodash')
+// import { debounce } from 'lodash'
+
 export default {
   props: {
     screenWidth: Number,
@@ -115,8 +141,43 @@ export default {
         },
       ],
       showMenu: false,
+      loadingResults: false,
+      searchTimer: null,
+      searchResults: []
     };
   },
+  methods: {
+    closeResults(){
+      this.loadingResults = false
+      this.searchResults = []
+    },
+    callSearch(event){            
+      clearTimeout(this.searchTimer)
+
+      this.searchTimer = setTimeout(() => {
+        this.search(event.target.value)
+      }, 2000)
+    },
+    search(mangaName) {      
+      this.$store.dispatch('manga/getManga', {query: `?title=${mangaName}`}).then((resp) => {
+        let results = resp.results;
+        
+        results.filter((result) => {          
+          this.$store.dispatch('manga/getCover', { data: {mangaId: result.data.id, coverId: result.relationships[2].id}}).then((resp) => {
+            result.cover = resp;
+          })  
+        })
+        
+        setTimeout(() => {
+          this.searchResults = results;
+          this.loadingResults = true;
+          console.log('Search Results', this.searchResults);
+        }, 500)
+      })            
+    },    
+  },  
+  watch: {
+  }
 };
 </script>
 

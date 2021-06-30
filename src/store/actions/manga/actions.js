@@ -23,8 +23,8 @@ export default {
 
         commit('setMangaList',  {data: mangas});
     },
-    async getCover({commit}, { data }) {          
-        let resp = await API.get(`/cover/${data.coverId}`)        
+    async getCover({commit}, { data }) {                  
+        let resp = await API.get(`/cover/${data.coverId}`);
         return `https://uploads.mangadex.org/covers/${data.mangaId}/${resp.data.attributes.fileName}`;
     },
     async getMangaChapters({commit}, { sort }){

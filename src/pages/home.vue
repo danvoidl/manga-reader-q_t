@@ -1,99 +1,63 @@
 <template>
-
   <div>
-      <section class="w-full relative mt-10">
-      <div class="w-11/12 m-auto mb-5">
+    <!-- Most Viewed -->
+    <section class="w-11/12 m-auto relative">
+      <div class="m-auto mb-5 absolute rounded-md w-max p-2 mt-2 left-5">
         <p class="font-semi-bold text-gray-50 text-2xl">Most Viewed</p>
         <p class="w-10 border-b-2 border-main-secondary"></p>
       </div>
 
       <div
-        class="bg-gray-900 w-11/12 m-auto h-96 mb-6 bg-center bg-contain bg-no-repeat"
+        class="bg-gray-900 w-full m-auto h-96 mb-6 bg-center bg-contain bg-no-repeat"
         :style="`background-image: url('${banner}')`"
       ></div>
-      </section>
+    </section>
 
-      <!--Latest Updates-->
-      <div class="w-11/12 m-auto mb-5">
-      <p class="font-bold text-gray-50 text-2xl">Latest Updates</p>
-      <p class="w-10 border-b-2 border-main-secondary"></p>
-      </div>
-      <section
-      class="flex flex-nowrap overflow-y-hidden overflow-scroll last-updated"
-      v-if="mangas.length > 0"      
-      >
+    <!--Latest Updates-->
+    <div class="w-11/12 m-auto mb-5 grid ">
+      <p class="text-gray-50 text-2xl">Latest Updates</p>
+      <p class="w-10 border-b-2 border-main-secondary"></p>      
+    </div>
+    <section
+      class="flex flex-nowrap gap-5 items-center shadow-inner overflow-auto w-11/12 m-auto last-updated"
+      v-if="mangas.length > 0"
+    >
       <div
-        class="w-56 h-80 ml-14 bg-green-50 rounded-md filter drop-shadow-md relative flex-shrink-0"
+        class="w-52 h-72 focus-within bg-green-50 rounded-md filter drop-shadow-md relative flex-shrink-0"
         :key="index"
         v-for="(manga, index) in mangas"
         @click="readManga(manga)"
       >
-        <router-link :to="`/read/${manga.mangaId}/${manga.data.attributes.chapter}`">
-          <img :src="manga.cover" class="w-full h-full rounded-sm" alt="" />
-
-          <span
-            class="absolute top-0 right-0 w-12 h-8 rounded-sm bg-main-secondary grid place-items-center font-semibold"
-          >
-            {{ manga.data.attributes.chapter}}
-          </span>
-
-          <div
-            class="absolute bottom-0 w-full h-14 bg-main bg-opacity-60 rounded-md grid place-items-center"
-          >
-            <span
-              class="text-center text-gray-50 break-all overflow-hidden p-1 font-sans font-medium"
-            >
-              {{
-                manga.data.attributes.title.length > 30
-                  ? `${manga.data.attributes.title.substring(0, 30)}...`
-                  : manga.data.attributes.title
-              }}
-            </span>            
-          </div>
-        </router-link>
+        <manga-card :manga="manga" :hasChapter='true' :routePath="`/read/${manga.mangaId}/${manga.data.attributes.chapter}`"/>
       </div>
-      </section>
+    </section>
 
-      <section v-else class="h-80 w-full grid place-items-center">
-        <div
-          class="animate-spin rounded-full h-14 w-14 border-t-2 border-b-2 border-gray-50"
-        ></div>
-      </section>   
+    <section v-else class="h-80 w-full grid place-items-center">      
+      <q-spinner
+        color="primary"
+        size="3em"
+        :thickness="2"
+      />
+    </section>
 
-      <!-- More Readed --> 
-      <div class="w-11/12 m-auto mb-5 mt-10">
-      <p class="font-bold text-gray-50 text-2xl">More Readed</p>
+    <!-- More Readed -->
+    <div class="w-11/12 m-auto mb-5 mt-10">
+      <p class="text-gray-50 text-2xl">More Readed</p>
       <p class="w-10 border-b-2 border-main-secondary"></p>
-      </div>
-      <section
-      class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 place-items-center gap-4 "
-      v-if="moreReaded.length > 0"      
-      >
+    </div>
+    <section
+      class="grid grid-cols-1  w-11/12 m-auto sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 "
+      v-if="moreReaded.length > 0"
+    >
       <div
         class="w-56 h-80 bg-green-50 rounded-md shadow-md relative flex-shrink-0"
         :key="index"
         v-for="(manga, index) in moreReaded"
         @click="readManga(manga)"
       >
-        <router-link :to="`/info/${manga.data.id}`">
-          <img :src="manga.cover" class="w-full h-full rounded-sm" alt="" />
-
-          <div
-            class="absolute bottom-0 w-full h-14 bg-main opacity-95 rounded-sm grid place-items-center"
-          >
-            <span
-              class="text-center text-gray-50 break-all overflow-hidden p-1 font-sans font-medium"
-            >
-              {{
-                manga.data.attributes.title.en.length > 30
-                  ? `${manga.data.attributes.title.en.substring(0, 30)}...`
-                  : manga.data.attributes.title.en
-              }}
-            </span>            
-          </div>
-        </router-link>
+        <manga-card :manga="manga" :hasChapter="false" :routePath="`/info/${manga.data.id}`" />
       </div>
-      </section> 
+    </section>
   </div>
 </template>
 
@@ -102,8 +66,11 @@ import bnh from "../assets/BNH.jpeg";
 import opm from "../assets/OPM.jpg";
 import solo from "../assets/frame1.png";
 
+import mangaCard from "../components/mangaCard.vue";
+
 export default {
   name: "home",
+  components: { mangaCard },
   data() {
     return {
       $q: {},
@@ -125,31 +92,37 @@ export default {
     replaceTitle(title) {
       return title.replace(/(\s)/g, "-");
     },
-
   },
   mounted() {
     this.$store
       .dispatch("manga/getMangaList", { query: "?limit=12&offset=0" })
       .then(() => {
         this.moreReaded = this.$store.state.manga.mangaList;
-        console.log('MORE READED',this.moreReaded);
+        console.log("MORE READED", this.moreReaded);
       });
 
-    this.$store.dispatch('chapters/getLatestUpdates', {sort: '?limit=12&order[publishAt]=desc'}).then((resp) => {
-      this.mangas = resp;
-      
-
-      this.mangas.map((manga) => {
-        manga.mangaId = manga.relationships[1].id    
-        if(manga.data.attributes.title == '') {
-          this.$store.dispatch('manga/getManga', { query: `/${manga.relationships[1].id}`}).then((resp) => {
-            manga.data.attributes.title = resp.data.attributes.title.en;
-          })
-        }
+    this.$store
+      .dispatch("chapters/getLatestUpdates", {
+        sort: "?limit=12&order[publishAt]=desc",
       })
+      .then((resp) => {
+        this.mangas = resp;
 
-      console.log('MANGAS', this.mangas);
-    })
+        this.mangas.map((manga) => {
+          manga.mangaId = manga.relationships[1].id;
+          if (manga.data.attributes.title == "") {
+            this.$store
+              .dispatch("manga/getManga", {
+                query: `/${manga.relationships[1].id}`,
+              })
+              .then((resp) => {
+                manga.data.attributes.title = resp.data.attributes.title.en;
+              });
+          }
+        });
+
+        console.log("MANGAS", this.mangas);
+      });
 
     setInterval(() => {
       let qtdImages = this.bannerImages.length - 1;
@@ -162,11 +135,18 @@ export default {
 };
 </script>
 
-<style>
-.last-updated::-webkit-scrollbar {
-  display: none;
-  width: 0;
-  height: 0;
-  opacity: 0;
+<style >
+
+.last-updated::-webkit-scrollbar {  
+ height: 5px;
 }
+
+.last-updated::-webkit-scrollbar-thumb {
+  background: gray;
+  height: 5px;
+  border-radius: 3px;
+}
+
+
+
 </style>

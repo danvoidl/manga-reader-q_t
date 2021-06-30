@@ -111,8 +111,7 @@ export default {
       this.$store.dispatch('chapters/getMangaChapter', { sort: `?manga=${this.manga.data.id}&chapter=${chapter}&limit=1` }).then(() => {
         this.$router.replace(`/read/${this.manga.data.id}/${chapter}`)
       })
-    },
-
+    },    
   },  
   async mounted(){            
     await this.$store.dispatch('manga/getManga', { query: `/${this.mangaId}`}).then((resp) => {      
@@ -132,7 +131,7 @@ export default {
       this.genres = this.manga.data.attributes.tags.filter(this.filterGenres);
       this.themes = this.manga.data.attributes.tags.filter(this.filterThemes);
       
-        this.imgReady = true;
+      this.imgReady = true;
       
     })        
     

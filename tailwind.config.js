@@ -7,7 +7,7 @@ module.exports = {
     screens: {
       'cellphone': '500px',      
       ...defaultTheme.screens
-    },
+    },    
     extend: {
       colors: {
         'main': '#141414',
@@ -19,6 +19,12 @@ module.exports = {
       minWidth: {
         '600': '660px'
       },
+      inset: {
+        '-98': '-24.5rem',
+      },
+      spacing: {
+        '82': '21rem'
+      }
     },    
   },
   variants: {
