@@ -42,7 +42,7 @@
           <div v-if="loadingResults">
             <div class="h-96 overflow-auto w-82 bg-main absolute left-0 -bottom-auto mt-2 rounded-sm">
               <div class="" :key='result.data.id' v-for="result in searchResults">
-                <router-link class="relative h-20 w-80 bg-gray-300 mt-1 mb-1 flex items-center cursor-pointer" :to="`/info/${result.data.id}`">
+                <router-link @click="!loadingResults" class="relative h-20 w-80 bg-gray-300 mt-1 mb-1 flex items-center cursor-pointer" :to="`/info/${result.data.id}`">
                   <div class="h-full w-16 place-self-start bg-gray-800" >
                     <img :src="result.cover" class="h-20 w-16" alt="">
                   </div>
@@ -163,7 +163,7 @@ export default {
         let results = resp.results;
         
         results.filter((result) => {          
-          this.$store.dispatch('manga/getCover', { data: {mangaId: result.data.id, coverId: result.relationships[2].id}}).then((resp) => {
+          this.$store.dispatch('manga/getCover', { data: {mangaId: result.data.id, coverId: result.relationships[result.relationships.length - 1].id}}).then((resp) => {
             result.cover = resp;
           })  
         })

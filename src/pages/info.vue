@@ -1,17 +1,18 @@
 <template>
   <div>
     <div class="h-80 z-20 filter blur-sm ">
-    <q-parallax
+      <q-parallax
       v-if="imgReady"
       :src="manga.cover"
-    >      
-    </q-parallax> 
+
+      >      
+      </q-parallax> 
     
-    <img
-      class="absolute -top-10 opacity-5 w-full h-11/12"
-      src="http://bgfons.com/uploads/iron/iron_texture2387.jpg"
-      alt=""
-    />
+      <img
+        class="absolute -top-10 opacity-5 w-full h-11/12"
+        src="http://bgfons.com/uploads/iron/iron_texture2387.jpg"
+        alt=""
+      />
     </div>
     <section class="relative bg-main flex flex-col mt-22" v-if="imgReady">
     <div class="absolute left-6 -top-32 text-gray-900">
@@ -111,47 +112,78 @@ export default {
       this.$store.dispatch('chapters/getMangaChapter', { sort: `?manga=${this.manga.data.id}&chapter=${chapter}&limit=1` }).then(() => {
         this.$router.replace(`/read/${this.manga.data.id}/${chapter}`)
       })
-    },    
+    },  
+    async getMangaInfo(){
+      await this.$store.dispatch('manga/getManga', { query: `/${this.mangaId}`}).then((resp) => {      
+        let mangaData = resp;
+        mangaData.relationships.filter((relation) => { 
+          if(relation.type == 'cover_art') {           
+            let payload = { coverId: relation.id, mangaId: this.mangaId };          
+            this.$store.dispatch('manga/getCover', { data: payload }).then((resp) => {         
+              mangaData.cover = resp;
+            })    
+          }
+        }) 
+
+        this.manga = mangaData;
+        console.log('Manga to read', this.manga);
+
+        this.genres = this.manga.data.attributes.tags.filter(this.filterGenres);
+        this.themes = this.manga.data.attributes.tags.filter(this.filterThemes);
+
+        setTimeout(() => {
+          this.imgReady = true;
+        },500)
+      
+      })  
+    },
+    async getChaptersInfo()  {
+      this.$store.dispatch('manga/getMangaChapters', { sort: `/${this.mangaId}/aggregate` }).then(() => {
+        let chapters = this.$store.state.manga.mangaChapters.volumes;
+
+        for(let index in chapters){
+          for(let index2 in chapters[index].chapters){
+            if(chapters[index].chapters[index2].chapter != 'none') this.chapters.push(parseFloat(chapters[index].chapters[index2].chapter))
+          }
+        }
+
+        this.chapters = [...new Set(this.chapters)];
+
+        this.chapters = this.chapters.sort((a,b) => {
+            if(a > b) return 1;
+            if(a < b) return -1;
+            return 0;
+          });
+      })
+    }
   },  
   async mounted(){            
-    await this.$store.dispatch('manga/getManga', { query: `/${this.mangaId}`}).then((resp) => {      
-      let mangaData = resp;
-      mangaData.relationships.filter((relation) => { 
-        if(relation.type == 'cover_art') {           
-          let payload = { coverId: relation.id, mangaId: this.mangaId };          
-          this.$store.dispatch('manga/getCover', { data: payload }).then((resp) => {         
-            mangaData.cover = resp;
-          })    
-        }
-      }) 
+    // await this.$store.dispatch('manga/getManga', { query: `/${this.mangaId}`}).then((resp) => {      
+    //   let mangaData = resp;
+    //   mangaData.relationships.filter((relation) => { 
+    //     if(relation.type == 'cover_art') {           
+    //       let payload = { coverId: relation.id, mangaId: this.mangaId };          
+    //       this.$store.dispatch('manga/getCover', { data: payload }).then((resp) => {         
+    //         mangaData.cover = resp;
+    //       })    
+    //     }
+    //   }) 
 
-      this.manga = mangaData;
-      console.log('Manga to read', this.manga);
+    //   this.manga = mangaData;
+    //   console.log('Manga to read', this.manga);
 
-      this.genres = this.manga.data.attributes.tags.filter(this.filterGenres);
-      this.themes = this.manga.data.attributes.tags.filter(this.filterThemes);
+    //   this.genres = this.manga.data.attributes.tags.filter(this.filterGenres);
+    //   this.themes = this.manga.data.attributes.tags.filter(this.filterThemes);
       
-      this.imgReady = true;
+    //   setTimeout(() => {
+    //     this.imgReady = true;
+    //   },500)
       
-    })        
+    // })        
+
+    await this.getMangaInfo();
+    await this.getChaptersInfo();
     
-    this.$store.dispatch('manga/getMangaChapters', { sort: `/${this.mangaId}/aggregate` }).then(() => {
-      let chapters = this.$store.state.manga.mangaChapters.volumes;
-
-      for(let index in chapters){
-        for(let index2 in chapters[index].chapters){
-          if(chapters[index].chapters[index2].chapter != 'none') this.chapters.push(parseFloat(chapters[index].chapters[index2].chapter))
-        }
-      }
-
-      this.chapters = [...new Set(this.chapters)];
-
-      this.chapters = this.chapters.sort((a,b) => {
-          if(a > b) return 1;
-          if(a < b) return -1;
-          return 0;
-        });
-    })
   },
 };
 </script>
