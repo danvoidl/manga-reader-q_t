@@ -14,49 +14,56 @@
     </section>
 
     <!--Latest Updates-->
-    <div class="w-11/12 m-auto mb-5 grid ">
+    <div class="w-11/12 m-auto mb-5 grid">
       <p class="text-gray-50 text-2xl">Latest Updates</p>
-      <p class="w-10 border-b-2 border-main-secondary"></p>      
+      <p class="w-10 border-b-2 border-main-secondary"></p>
     </div>
     <section
-      class="flex flex-nowrap gap-5 items-center shadow-inner overflow-auto w-11/12 m-auto last-updated"
+      class="flex flex-nowrap h-96 gap-5 items-center shadow-inner overflow-auto w-11/12 m-auto last-updated"
       v-if="mangas.length > 0"
     >
       <div
-        class="w-52 h-72 focus-within bg-green-50 rounded-md filter drop-shadow-md relative flex-shrink-0"
+        class="w-56 h-80 focus-within bg-green-50 rounded-md shadow-md-b relative flex-shrink-0"
         :key="index"
         v-for="(manga, index) in mangas"
         @click="readManga(manga)"
       >
-        <manga-card :manga="manga" :hasChapter='true' :routePath="`/read/${manga.mangaId}/${manga.data.attributes.chapter}`"/>
+        <manga-card
+          :manga="manga"
+          :hasChapter="true"
+          :routePath="`/read/${manga.mangaId}/${manga.data.attributes.chapter}`"
+        />
       </div>
     </section>
 
-    <section v-else class="h-80 w-full grid place-items-center">      
-      <q-spinner
-        color="primary"
-        size="3em"
-        :thickness="2"
-      />
+    <section v-else class="h-80 w-full grid place-items-center">
+      <q-spinner color="primary" size="3em" :thickness="2" />
     </section>
 
     <!-- More Readed -->
     <div class="w-11/12 m-auto mb-5 mt-10">
-      <p class="text-gray-50 text-2xl">More Readed</p>
+      <p class="text-gray-50 text-2xl">Read now</p>
       <p class="w-10 border-b-2 border-main-secondary"></p>
     </div>
     <section
-      class="grid grid-cols-1  w-11/12 m-auto sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 "
+      class="grid  grid-cols-1 w-11/12 m-auto sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
       v-if="moreReaded.length > 0"
     >
       <div
-        class="w-56 h-80 bg-green-50 rounded-md shadow-md relative flex-shrink-0"
+        class="w-56 h-80 bg-green-50 rounded-md shadow-md-b relative flex-shrink-0"
         :key="index"
         v-for="(manga, index) in moreReaded"
         @click="readManga(manga)"
       >
-        <manga-card :manga="manga" :hasChapter="false" :routePath="`/info/${manga.data.id}`" />
+        <manga-card
+          :manga="manga"
+          :hasChapter="false"
+          :routePath="`/info/${manga.data.id}`"
+        />
       </div>
+    </section>
+    <section v-else class="h-80 w-full grid place-items-center">
+      <q-spinner color="primary" size="3em" :thickness="2" />
     </section>
   </div>
 </template>
@@ -135,10 +142,9 @@ export default {
 };
 </script>
 
-<style >
-
-.last-updated::-webkit-scrollbar {  
- height: 5px;
+<style>
+.last-updated::-webkit-scrollbar {
+  height: 5px;
 }
 
 .last-updated::-webkit-scrollbar-thumb {
@@ -146,7 +152,4 @@ export default {
   height: 5px;
   border-radius: 3px;
 }
-
-
-
 </style>

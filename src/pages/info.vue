@@ -1,22 +1,17 @@
 <template>
   <div>
-    <div class="h-80 z-20 filter blur-sm ">
+    <div class="h-80 z-20 filter blur-sm " >
       <q-parallax
-      v-if="imgReady"
+      v-if="imgReady"                             
       :src="manga.cover"
+      :speed="1"   
 
-      >      
+      >                          
       </q-parallax> 
-    
-      <img
-        class="absolute -top-10 opacity-5 w-full h-11/12"
-        src="http://bgfons.com/uploads/iron/iron_texture2387.jpg"
-        alt=""
-      />
     </div>
     <section class="relative bg-main flex flex-col mt-22" v-if="imgReady">
     <div class="absolute left-6 -top-32 text-gray-900">
-      <img v-if="imgReady" :src="manga.cover" class="h-96" alt="" />
+      <img v-if="imgReady" :src="manga.cover" class="h-96 bg-main-secondary " alt="" />
 
       <!-- Manga Status -->
       <p
@@ -38,13 +33,13 @@
         {{ manga.data.attributes.title.en }} 
       </p>
       <p class="mt-2 border border-b-2 border-main-secondary w-20"></p>
-      <p class="mt-5 w-2/3">{{ manga.data.attributes.description.en }}</p>
+      <p class="mt-5 w-2/3">{{ manga.data.attributes.description.en.length > 600 ? `${manga.data.attributes.description.en.substring(0, 600)}...` : manga.data.attributes.description.en }}</p>
 
       <!-- GENRES -->
-      <div class="flex mt-6">
+      <div class="flex mt-6 w-11/12 ">
         <p class="mr-4 text-center">Genres:</p>
         <div
-          class="w-32 h-6 ml-2 bg-gray-50 rounded-md text-black-main text-center"
+          class="w-32 h-6 ml-2 mb-2 bg-gray-50 rounded-md text-black-main text-center"
           :key="genre.id"
           v-for="genre in genres"
         >
@@ -53,10 +48,10 @@
       </div>
 
       <!-- THEMES -->
-      <div class="flex mt-3">
+      <div class="flex mt-3 w-11/12">
         <p class="mr-4 text-center">Themes:</p>
         <div
-          class="w-32 h-6 ml-2 bg-gray-50 rounded-md text-black-main text-center"
+          class="w-32 h-6 ml-2 mb-2 bg-gray-50 rounded-md text-black-main text-center"
           :key="theme.id"
           v-for="theme in themes"
         >
@@ -68,15 +63,15 @@
     <div class="ml-6 mt-10">
       <p class="text-gray-50 mt-9">Chapters:</p>
       <ul>
-        <li :key="chapter" v-for="chapter in chapters" class="text-gray-50">
-        <router-link :to="`/read/${manga.data.id}/${chapter}`">
-          <div
-            class="cursor-pointer bg-gray-900 mt-2 grid h-12 w-5/6"
-            @click="read(chapter)"
-          >
-            <p class="ml-2 self-center">Capítulo: {{ chapter }}</p>
-          </div>
-        </router-link>
+        <li :key="chapter" v-for="chapter in chapters" class="text-main">
+          <router-link :to="`/read/${manga.data.id}/${chapter}`">
+            <div
+              class="cursor-pointer bg-main-secondary mt-2 grid h-12 w-5/6"
+              @click="read(chapter)"
+            >
+              <p class="ml-2 self-center">Capítulo: {{ chapter }}</p>
+            </div>
+          </router-link>
         </li>
       </ul>
     </div>
@@ -114,7 +109,7 @@ export default {
       })
     },  
     async getMangaInfo(){
-      await this.$store.dispatch('manga/getManga', { query: `/${this.mangaId}`}).then((resp) => {      
+      this.$store.dispatch('manga/getManga', { query: `/${this.mangaId}`}).then((resp) => {      
         let mangaData = resp;
         mangaData.relationships.filter((relation) => { 
           if(relation.type == 'cover_art') {           
@@ -141,9 +136,12 @@ export default {
       this.$store.dispatch('manga/getMangaChapters', { sort: `/${this.mangaId}/aggregate` }).then(() => {
         let chapters = this.$store.state.manga.mangaChapters.volumes;
 
+        console.log(chapters);
         for(let index in chapters){
           for(let index2 in chapters[index].chapters){
-            if(chapters[index].chapters[index2].chapter != 'none') this.chapters.push(parseFloat(chapters[index].chapters[index2].chapter))
+            if(chapters[index].chapters[index2].chapter != 'none') {
+              this.chapters.push(parseFloat(chapters[index].chapters[index2].chapter))              
+            }
           }
         }
 
@@ -157,34 +155,15 @@ export default {
       })
     }
   },  
-  async mounted(){            
-    // await this.$store.dispatch('manga/getManga', { query: `/${this.mangaId}`}).then((resp) => {      
-    //   let mangaData = resp;
-    //   mangaData.relationships.filter((relation) => { 
-    //     if(relation.type == 'cover_art') {           
-    //       let payload = { coverId: relation.id, mangaId: this.mangaId };          
-    //       this.$store.dispatch('manga/getCover', { data: payload }).then((resp) => {         
-    //         mangaData.cover = resp;
-    //       })    
-    //     }
-    //   }) 
-
-    //   this.manga = mangaData;
-    //   console.log('Manga to read', this.manga);
-
-    //   this.genres = this.manga.data.attributes.tags.filter(this.filterGenres);
-    //   this.themes = this.manga.data.attributes.tags.filter(this.filterThemes);
-      
-    //   setTimeout(() => {
-    //     this.imgReady = true;
-    //   },500)
-      
-    // })        
-
+  async mounted(){                     
     await this.getMangaInfo();
-    await this.getChaptersInfo();
-    
+    await this.getChaptersInfo();    
   },
+  watch: {
+    '$route.params.id'(n, o){
+      document.location.reload()
+    }
+  }
 };
 </script>
 

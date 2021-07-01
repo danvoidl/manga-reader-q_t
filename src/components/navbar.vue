@@ -40,9 +40,9 @@
           </svg>
 
           <div v-if="loadingResults">
-            <div class="h-96 overflow-auto w-82 bg-main absolute left-0 -bottom-auto mt-2 rounded-sm">
+            <div class=" h-auto max-h-96 overflow-auto w-82 bg-main absolute left-0 -bottom-auto mt-2 rounded-sm">
               <div class="" :key='result.data.id' v-for="result in searchResults">
-                <router-link @click="!loadingResults" class="relative h-20 w-80 bg-gray-300 mt-1 mb-1 flex items-center cursor-pointer" :to="`/info/${result.data.id}`">
+                <router-link class="relative h-20 w-80 bg-gray-300 mt-1 mb-1 flex items-center cursor-pointer" :to="`/info/${result.data.id}`" replace>
                   <div class="h-full w-16 place-self-start bg-gray-800" >
                     <img :src="result.cover" class="h-20 w-16" alt="">
                   </div>
@@ -57,7 +57,9 @@
 
         <div v-if='navOptions.length > 0' >
           <ul class="flex text-gray-50 ">
-            <li :key="option.name" v-for="option in navOptions" class="flex items-center cursor-pointer border-b border-transparent hover:border-b-2 hover:border-yellow-400 m-6" > {{option.name}} </li>            
+            <router-link class="flex items-center cursor-pointer border-b border-transparent hover:border-b-2 hover:border-yellow-400 m-6" :to='{name: option.route}' :key="option.name" v-for="option in navOptions">
+              <li > {{option.name}} </li>            
+            </router-link>
           </ul>
         </div>
 
@@ -113,8 +115,6 @@
 </template>
 
 <script>
-const _ = require('lodash')
-// import { debounce } from 'lodash'
 
 export default {
   props: {
@@ -124,20 +124,20 @@ export default {
     return {
       navOptions: [
         {
-          name: "Home",
-          route: '/',
+          name: "Home", 
+          route: 'home'         
         },
         {
           name: "Mangas",
-          route: '/manga', 
+          route: '', 
         },
         {
           name: "Latest",
-          route: '/latest'
+          route: ''
         },
         {
           name: 'Top voted',
-          route: '/manga/voted'
+          route: ''
         },
       ],
       showMenu: false,
@@ -146,7 +146,7 @@ export default {
       searchResults: []
     };
   },
-  methods: {
+  methods: {    
     closeResults(){
       this.loadingResults = false
       this.searchResults = []
@@ -155,10 +155,12 @@ export default {
       clearTimeout(this.searchTimer)
 
       this.searchTimer = setTimeout(() => {
-        this.search(event.target.value)
-      }, 2000)
+        if(event.target.value.length > 0){
+          this.search(event.target.value)
+        }
+      }, 500)
     },
-    search(mangaName) {      
+    async search(mangaName) {      
       this.$store.dispatch('manga/getManga', {query: `?title=${mangaName}`}).then((resp) => {
         let results = resp.results;
         

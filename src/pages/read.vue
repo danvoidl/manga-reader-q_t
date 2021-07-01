@@ -1,7 +1,11 @@
 <template>
   <div class="grid grid-cols-3 w-full h-screen" >
-    <section id="container_manga" class=" col-span-2 h-full  overflow-scroll overflow-x-hidden">
-      <img class="w-full " :key='image' v-for="image in chapterImages" :src="image" alt="">
+    <section v-if="mode == 'TB'" id="container_manga" class=" col-span-2 h-full bg-white overflow-scroll overflow-x-hidden">
+      <img class="w-full mt-2 " :key='image' v-for="image in chapterImages" :src="image" alt="">
+    </section>
+
+    <section v-else id="container_manga" @keypress.left="passImage(-1)" @keypress.right="passImage(1)" class="col-span-2 h-full bg-white overflow-auto">      
+        <img class="w-full"  :src="image" alt="">      
     </section>
 
     <section class="h-auto p-2 bg-main text-gray-50 border-t-2 ">
@@ -12,8 +16,8 @@
       <div class="mt-4 text-sm"> 
         Reading Mode:
         <span>
-          <button class="ring ring-main-secondary ring-opacity-80 ml-2 w-auto p-2 text-gray-50 rounded">Roll</button>
-          <button class="ring ring-main-secondary ring-opacity-80 ml-2 w-auto p-2 text-gray-50 rounded">Pass pages</button>                
+          <button @click="readingMode('TB')" class="ring ring-white focus:ring-main-secondary focus-within:ring-main-secondary ring-opacity-80 ml-2 w-auto p-2 text-gray-50 rounded">Top > Bottom</button>
+          <button @click="readingMode('LR')" class="ring ring-white focus:ring-main-secondary focus-within:ring-main-secondary ring-opacity-80 ml-2 w-auto p-2 text-gray-50 rounded">Left > Right</button>                
         </span>
       </div>
       <div class="mt-4 text-sm">
@@ -25,6 +29,12 @@
 
 
     </section>
+
+    <q-dialog v-model="endChapter">
+      <q-card>
+        <h1> End of chapter </h1>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 
@@ -32,22 +42,45 @@
 export default {
   data(){
     return {
+      image: '',
       chapterImages: [],
       mangaInfo: {},
       mangaId: this.$route.params.id,
       chapter: this.$route.params.cap,
+      mode: 'TB',
+      imagePosition: 0,
+      endChapter: false
     }
   },
   created(){
     console.log(this.$route.params.id, this.$route.params.cap);
   },
   mounted() {    
+    this.$store.dispatch('manga/getManga', {query: `/${this.$route.params.id}`}).then((resp) => {
+      this.mangaInfo = resp
+      console.log('mangaInfo',this.mangaInfo);
+    })
     this.$store.dispatch('chapters/getMangaChapter', { sort: `?manga=${this.mangaId}&chapter=${this.chapter}&limit=1` }).then(() => {      
-      this.chapterImages = this.$store.state.chapters.chapterImages;
-      this.mangaInfo = this.$store.state.manga.mangaToRead;          
+      this.chapterImages = this.$store.state.chapters.chapterImages;             
     });           
   },
   methods: {    
+    readingMode(way){
+      this.mode = way;
+      if(this.mode == 'LR') {
+        this.image = this.chapterImages[this.imagePosition];                
+        document.addEventListener('keydown', (event) => {          
+          if(event.code == 'ArrowRight' && this.imagePosition < this.chapterImages.length - 1) this.imagePosition++;      
+          if(event.code == 'ArrowLeft' && this.imagePosition > 0) this.imagePosition--;                                        
+          this.image = this.chapterImages[this.imagePosition];                
+        })
+      }
+    },
+    passImage(number){
+      console.log(this.imagePosition);
+      this.imagePosition + number;
+      this.image = this.chapterImages[this.imagePosition]
+    }
   }
 }
 </script>
@@ -56,6 +89,7 @@ export default {
 
 #container_manga::-webkit-scrollbar{
   width: 11px;
+  height: 5px;
   padding: 1px;
 }
 
