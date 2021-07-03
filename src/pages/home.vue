@@ -10,7 +10,9 @@
       <div
         class="bg-gray-900 w-full m-auto h-96 mb-6 bg-center bg-contain bg-no-repeat"
         :style="`background-image: url('${banner}')`"
-      ></div>
+      >
+        <img :src="banner" class="w-full h-full" alt="">
+      </div>
     </section>
 
     <!--Latest Updates-->
@@ -19,11 +21,11 @@
       <p class="w-10 border-b-2 border-main-secondary"></p>
     </div>
     <section
-      class="flex flex-nowrap h-96 gap-5 items-center shadow-inner overflow-auto w-11/12 m-auto last-updated"
+      class="flex flex-nowrap h-82 gap-5 items-center shadow-inner overflow-auto w-11/12 m-auto last-updated"
       v-if="mangas.length > 0"
     >
       <div
-        class="w-56 h-80 focus-within bg-green-50 rounded-md shadow-md-b relative flex-shrink-0"
+        class="w-56 h-80 focus-within bg-green-50 rounded-md shadow-md-b relative flex-shrink-0 "
         :key="index"
         v-for="(manga, index) in mangas"
         @click="readManga(manga)"

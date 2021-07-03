@@ -1,10 +1,10 @@
 <template>
-  <div class="grid grid-cols-3 w-full h-screen" >
-    <section v-if="mode == 'TB'" id="container_manga" class=" col-span-2 h-full bg-white overflow-scroll overflow-x-hidden">
+  <div class="grid grid-cols-4 w-full h-screen" >
+    <section v-if="mode == 'TB'" id="container_manga" class=" col-span-3 h-full bg-white overflow-scroll overflow-x-hidden">
       <img class="w-full mt-2 " :key='image' v-for="image in chapterImages" :src="image" alt="">
     </section>
 
-    <section v-else id="container_manga" @keypress.left="passImage(-1)" @keypress.right="passImage(1)" class="col-span-2 h-full bg-white overflow-auto">      
+    <section v-else id="container_manga" @keypress.left="passImage(-1)" @keypress.right="passImage(1)" class="col-span-3 h-full bg-white overflow-auto">      
         <img class="w-full"  :src="image" alt="">      
     </section>
 
@@ -23,7 +23,11 @@
       <div class="mt-4 text-sm">
         Readind Status: 
         <span>
-          
+          {{ chapterCompleted ? 'Completed' : 'Keep reading'}}
+        </span>
+        <span class="block">
+          <button @click='previousChapter()' class="bg-main-secondary text-main rounded-sm w-auto p-2 ml-2 mt-2">Previous Chapter</button>
+          <button @click='nextChapter()' class="bg-main-secondary text-main rounded-sm w-auto p-2 ml-2">Next Chapter</button>
         </span>
       </div>
 
@@ -49,7 +53,8 @@ export default {
       chapter: this.$route.params.cap,
       mode: 'TB',
       imagePosition: 0,
-      endChapter: false
+      endChapter: false,
+      chapterCompleted: false,
     }
   },
   created(){
@@ -65,14 +70,22 @@ export default {
     });           
   },
   methods: {    
+    nextChapter(){
+      this.$router.push(`/read/${this.$route.params.id}/${this.$route.params.cap++}`)
+    },
+    previousChapter(){
+      this.$router.push(`/read/${this.$route.params.id}/${this.$route.params.cap--}`)
+    },
     readingMode(way){
       this.mode = way;
       if(this.mode == 'LR') {
         this.image = this.chapterImages[this.imagePosition];                
         document.addEventListener('keydown', (event) => {          
           if(event.code == 'ArrowRight' && this.imagePosition < this.chapterImages.length - 1) this.imagePosition++;      
-          if(event.code == 'ArrowLeft' && this.imagePosition > 0) this.imagePosition--;                                        
-          this.image = this.chapterImages[this.imagePosition];                
+          if(event.code == 'ArrowLeft' && this.imagePosition > 0) this.imagePosition--;      
+          if(this.chapterImages.length - 1 >= this.imagePosition) this.chapterCompleted = true                                  
+          this.image = this.chapterImages[this.imagePosition];    
+                      
         })
       }
     },
@@ -80,6 +93,11 @@ export default {
       console.log(this.imagePosition);
       this.imagePosition + number;
       this.image = this.chapterImages[this.imagePosition]
+    }
+  },
+  watch:{
+    '$route.params.cap'(n, o){
+      document.location.reload()
     }
   }
 }

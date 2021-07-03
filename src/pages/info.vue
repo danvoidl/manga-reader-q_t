@@ -60,7 +60,7 @@
       </div>
     </div>
 
-    <div class="ml-6 mt-10">
+    <div class="ml-6 mt-20">
       <p class="text-gray-50 mt-9">Chapters:</p>
       <ul>
         <li :key="chapter" v-for="chapter in chapters" class="text-main">
