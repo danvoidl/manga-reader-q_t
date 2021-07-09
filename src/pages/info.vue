@@ -11,7 +11,7 @@
     </div>
     <section class="relative bg-main flex flex-col mt-22" v-if="imgReady">
     <div class="absolute left-6 -top-32 text-gray-900">
-      <img v-if="imgReady" :src="manga.cover" class="h-96 bg-main-secondary " alt="" />
+      <img v-if="imgReady" :src="manga.cover" class="h-96 max-w-  bg-main-secondary " alt="" />
 
       <!-- Manga Status -->
       <p

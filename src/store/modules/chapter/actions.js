@@ -1,4 +1,3 @@
-import { data } from 'autoprefixer';
 import api from '../../../API/api.js'
 
 const endpoint = '/chapter'
@@ -31,9 +30,7 @@ export default {
     
             for (let index in chapter.data.attributes.data) {
                 chapterImages.push(`${url_images}/data/${chapter.data.attributes.hash}/${chapter.data.attributes.data[index]}`);            
-            }             
-            
-            console.log('CHAPTER IMAGES', chapterImages);
+            }                         
 
             commit('setChapterImages', {data: chapterImages});       
 

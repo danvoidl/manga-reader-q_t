@@ -119,7 +119,7 @@ export default {
 
         this.mangas.map((manga) => {
           manga.mangaId = manga.relationships[1].id;
-          if (manga.data.attributes.title == "") {
+          if (manga.data.attributes.title == null) {
             this.$store
               .dispatch("manga/getManga", {
                 query: `/${manga.relationships[1].id}`,

@@ -26,7 +26,7 @@
           {{ chapterCompleted ? 'Completed' : 'Keep reading'}}
         </span>
         <span class="block">
-          <button @click='previousChapter()' class="bg-main-secondary text-main rounded-sm w-auto p-2 ml-2 mt-2">Previous Chapter</button>
+            <button @click="previousChapter()" class="bg-main-secondary text-main rounded-sm w-auto p-2 ml-2 mt-2">Previous Chapter</button>          
           <button @click='nextChapter()' class="bg-main-secondary text-main rounded-sm w-auto p-2 ml-2">Next Chapter</button>
         </span>
       </div>
@@ -55,6 +55,7 @@ export default {
       imagePosition: 0,
       endChapter: false,
       chapterCompleted: false,
+      chapters: []
     }
   },
   created(){
@@ -67,14 +68,19 @@ export default {
     })
     this.$store.dispatch('chapters/getMangaChapter', { sort: `?manga=${this.mangaId}&chapter=${this.chapter}&limit=1` }).then(() => {      
       this.chapterImages = this.$store.state.chapters.chapterImages;             
-    });           
+    }); 
+    this.getChaptersInfo();          
   },
   methods: {    
-    nextChapter(){
-      this.$router.push(`/read/${this.$route.params.id}/${this.$route.params.cap++}`)
+    nextChapter(){ 
+      let index = this.chapters.findIndex(element => element == parseFloat(this.chapter))
+      index = this.chapters[index + 1]
+      this.$route.params.cap = index.toString()
     },
     previousChapter(){
-      this.$router.push(`/read/${this.$route.params.id}/${this.$route.params.cap--}`)
+      let index =  this.chapters.findIndex(element => element == parseFloat(this.chapter))
+      index = this.chapters[index - 1]
+      this.$route.params.cap = index.toString()
     },
     readingMode(way){
       this.mode = way;
@@ -93,6 +99,30 @@ export default {
       console.log(this.imagePosition);
       this.imagePosition + number;
       this.image = this.chapterImages[this.imagePosition]
+    },
+    async getChaptersInfo()  {
+      this.$store.dispatch('manga/getMangaChapters', { sort: `/${this.mangaId}/aggregate` }).then(() => {
+        let chapters = this.$store.state.manga.mangaChapters.volumes;
+
+        console.log(chapters);
+        for(let index in chapters){
+          for(let index2 in chapters[index].chapters){
+            if(chapters[index].chapters[index2].chapter != 'none') {
+              this.chapters.push(parseFloat(chapters[index].chapters[index2].chapter))              
+            }
+          }
+        }
+
+        this.chapters = [...new Set(this.chapters)];
+
+        this.chapters = this.chapters.sort((a,b) => {
+          if(a > b) return 1;
+          if(a < b) return -1;
+          return 0;
+        });
+
+        console.log(this.chapters);
+      })
     }
   },
   watch:{
@@ -106,7 +136,7 @@ export default {
 <style>
 
 #container_manga::-webkit-scrollbar{
-  width: 11px;
+  width: 8px;
   height: 5px;
   padding: 1px;
 }

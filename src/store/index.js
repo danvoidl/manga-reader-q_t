@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import manga from './actions/manga/index'
-import chapters from './actions/chapter/index'
+import manga from './modules/manga/index'
+import chapters from './modules/chapter/index'
 
 // import example from './module-example'
 

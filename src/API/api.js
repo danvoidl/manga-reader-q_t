@@ -2,12 +2,10 @@ const API_URL = 'https://api.mangadex.org'
 const PROXY_URL = 'https://radiant-chamber-25358.herokuapp.com/'
 
 export default {        
-    async get(endpoint = '', query = '', hasProxy = false ){
-        let proxy = '';
-        proxy = hasProxy ? proxy = PROXY_URL : proxy = '';
+    async get(endpoint = '', query = ''){        
         const [method] = ['GET'];
         try {
-            let resp = await fetch(proxy + API_URL + endpoint + query,  { method });        
+            let resp = await fetch(PROXY_URL + API_URL + endpoint + query,  { method });        
             let data = await resp.json();                        
             if(resp.status > 202 || resp.status >= 300) throw resp; 
             console.log(method, data);                                       

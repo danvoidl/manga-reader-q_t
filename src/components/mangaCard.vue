@@ -16,7 +16,7 @@
       >
         <span
           class="text-center text-gray-50 break-all overflow-hidden p-1 font-sans font-medium"
-          v-if="hasChapter"
+          v-if="hasChapter && manga.data.attributes.title != null"
         >
           {{
             manga.data.attributes.title.length > 30
@@ -24,7 +24,7 @@
               : manga.data.attributes.title
           }}
         </span>
-        <span v-else class="text-center text-gray-50 break-all overflow-hidden p-1 font-sans font-medium">
+        <span v-else-if='manga.data.attributes.title != null' class="text-center text-gray-50 break-all overflow-hidden p-1 font-sans font-medium">
           {{
             manga.data.attributes.title.en.length > 30
               ? `${manga.data.attributes.title.en.substring(0, 30)}...`
