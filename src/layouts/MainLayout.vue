@@ -15,7 +15,6 @@ export default {
   components: { Navbar },
   data () {
     return {
-      leftDrawerOpen: false,   
       windowWidth: window.innerWidth,    
     }
   },
@@ -24,6 +23,9 @@ export default {
       this.windowWidth = window.innerWidth;
     };      
   },
+  created(){
+    if(this.$route.path == '/') this.$router.push({name: 'main' })
+  }
 }
 </script>
 

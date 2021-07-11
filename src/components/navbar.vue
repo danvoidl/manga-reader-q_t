@@ -126,7 +126,7 @@ export default {
       navOptions: [
         {
           name: "Home", 
-          route: 'home'         
+          route: 'main'         
         },
         {
           name: "Mangas",

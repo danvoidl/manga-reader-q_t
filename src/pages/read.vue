@@ -9,8 +9,11 @@
     </section>
 
     <section class="h-auto p-2 bg-main text-gray-50 border-t-2 ">
-      <div class="text-center font-semibold mt-3 flex flex-col items-center border-radius-2 " v-if="mangaInfo.data">
-        {{ mangaInfo.data.attributes.title.en}} <br> <p class="font-extralight">Capítulo: {{ chapter }}</p> 
+      <div class=" text-center font-semibold mt-3 flex flex-col items-center border-radius-2 " v-if="mangaInfo.data">
+        <router-link class="hover:text-main-secondary" :to="`/info/${this.mangaId}`">
+          {{ mangaInfo.data.attributes.title.en}} <br> 
+        </router-link>
+        <p class="font-extralight">Capítulo: {{ chapter }}</p> 
         <p class="border-b-2 border-main-secondary w-14 text-center mt-2 "></p>    
       </div>
       <div class="mt-4 text-sm"> 

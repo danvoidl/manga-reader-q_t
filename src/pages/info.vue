@@ -5,7 +5,7 @@
       v-if="imgReady"                             
       :src="manga.cover"
       :speed="1"   
-
+      class="bg-top"
       >                          
       </q-parallax> 
     </div>

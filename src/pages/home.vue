@@ -21,11 +21,11 @@
       <p class="w-10 border-b-2 border-main-secondary"></p>
     </div>
     <section
-      class="flex flex-nowrap h-82 gap-5 items-center shadow-inner overflow-auto w-11/12 m-auto last-updated"
+      class="flex flex-nowrap h-73 gap-5 items-center shadow-inner overflow-auto w-11/12 m-auto last-updated"
       v-if="mangas.length > 0"
     >
       <div
-        class="w-56 h-80 focus-within bg-green-50 rounded-md shadow-md-b relative flex-shrink-0 "
+        class="w-48 h-72 focus-within bg-green-50 rounded-md shadow-md-b relative flex-shrink-0 "
         :key="index"
         v-for="(manga, index) in mangas"
         @click="readManga(manga)"
@@ -52,7 +52,7 @@
       v-if="moreReaded.length > 0"
     >
       <div
-        class="w-56 h-80 bg-green-50 rounded-md shadow-md-b relative flex-shrink-0"
+        class="w-48 h-72 bg-green-50 rounded-md shadow-md-b relative flex-shrink-0"
         :key="index"
         v-for="(manga, index) in moreReaded"
         @click="readManga(manga)"
@@ -80,7 +80,7 @@ import mangaCard from "../components/mangaCard.vue";
 export default {
   name: "home",
   components: { mangaCard },
-  data() {
+  data() {73
     return {
       $q: {},
       mangas: [],
@@ -104,33 +104,25 @@ export default {
   },
   mounted() {
     this.$store
-      .dispatch("manga/getMangaList", { query: "?limit=12&offset=0" })
-      .then(() => {
+      .dispatch("manga/getMangaList", { query: "?limit=12&offset=0" }).then(() => {
         this.moreReaded = this.$store.state.manga.mangaList;
         console.log("MORE READED", this.moreReaded);
       });
 
-    this.$store
-      .dispatch("chapters/getLatestUpdates", {
-        sort: "?limit=12&order[publishAt]=desc",
-      })
-      .then((resp) => {
+    this.$store.dispatch("chapters/getLatestUpdates", {sort: "?limit=12&order[publishAt]=desc" }).then((resp) => {
         this.mangas = resp;
 
         this.mangas.map((manga) => {
           manga.mangaId = manga.relationships[1].id;
           if (manga.data.attributes.title == null) {
-            this.$store
-              .dispatch("manga/getManga", {
-                query: `/${manga.relationships[1].id}`,
-              })
+            this.$store.dispatch("manga/getManga", {query: `/${manga.relationships[1].id}`,})
               .then((resp) => {
                 manga.data.attributes.title = resp.data.attributes.title.en;
               });
           }
         });
 
-        console.log("MANGAS", this.mangas);
+        console.log("LATEST UPDATES", this.mangas);
       });
 
     setInterval(() => {
