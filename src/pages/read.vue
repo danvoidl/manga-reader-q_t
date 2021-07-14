@@ -13,7 +13,7 @@
         <router-link class="hover:text-main-secondary" :to="`/info/${this.mangaId}`">
           {{ mangaInfo.data.attributes.title.en}} <br> 
         </router-link>
-        <p class="font-extralight">Capítulo: {{ chapter }}</p> 
+        <p class="font-extralight">Capítulo: {{ this.chapter }}</p> 
         <p class="border-b-2 border-main-secondary w-14 text-center mt-2 "></p>    
       </div>
       <div class="mt-4 text-sm"> 
@@ -53,7 +53,7 @@ export default {
       chapterImages: [],
       mangaInfo: {},
       mangaId: this.$route.params.id,
-      chapter: this.$route.params.cap,
+      chapter: localStorage.getItem('chapterToRead'),
       mode: 'TB',
       imagePosition: 0,
       endChapter: false,
@@ -61,10 +61,7 @@ export default {
       chapters: []
     }
   },
-  created(){
-    console.log(this.$route.params.id, this.$route.params.cap);
-  },
-  mounted() {    
+  mounted() {   
     this.$store.dispatch('manga/getManga', {query: `/${this.$route.params.id}`}).then((resp) => {
       this.mangaInfo = resp
       console.log('mangaInfo',this.mangaInfo);
@@ -78,23 +75,33 @@ export default {
     nextChapter(){ 
       let index = this.chapters.findIndex(element => element == parseFloat(this.chapter))
       index = this.chapters[index + 1]
-      this.$route.params.cap = index.toString()
+      this.chapter = index
     },
     previousChapter(){
       let index =  this.chapters.findIndex(element => element == parseFloat(this.chapter))
       index = this.chapters[index - 1]
-      this.$route.params.cap = index.toString()
+      this.chapter = index
     },
     readingMode(way){
       this.mode = way;
       if(this.mode == 'LR') {
-        this.image = this.chapterImages[this.imagePosition];                
+        var container_manga = document.querySelector('#container_manga');
+        this.image = this.chapterImages[this.imagePosition];     
+                   
         document.addEventListener('keydown', (event) => {          
-          if(event.code == 'ArrowRight' && this.imagePosition < this.chapterImages.length - 1) this.imagePosition++;      
-          if(event.code == 'ArrowLeft' && this.imagePosition > 0) this.imagePosition--;      
-          if(this.chapterImages.length - 1 >= this.imagePosition) this.chapterCompleted = true                                  
-          this.image = this.chapterImages[this.imagePosition];    
-                      
+          if(event.code == 'ArrowRight' && this.imagePosition < this.chapterImages.length - 1){
+            this.imagePosition++;
+            container_manga.scrollTo(0,0)
+          }       
+          if(event.code == 'ArrowLeft' && this.imagePosition > 0) {
+            this.imagePosition--;
+            container_manga.scrollTo(0,0)
+          }      
+          if(this.chapterImages.length - 1 >= this.imagePosition) {
+            this.chapterCompleted = true
+          }
+
+          this.image = this.chapterImages[this.imagePosition];                
         })
       }
     },
@@ -123,13 +130,13 @@ export default {
           if(a < b) return -1;
           return 0;
         });
-
-        console.log(this.chapters);
       })
     }
   },
   watch:{
-    '$route.params.cap'(n, o){
+    chapter(){
+      localStorage.removeItem('chapterToRead')
+      localStorage.setItem('chapterToRead',this.chapter)
       document.location.reload()
     }
   }
@@ -137,7 +144,6 @@ export default {
 </script>
 
 <style>
-
 #container_manga::-webkit-scrollbar{
   width: 8px;
   height: 5px;

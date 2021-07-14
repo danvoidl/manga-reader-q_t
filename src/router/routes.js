@@ -20,7 +20,7 @@ const routes = [
         },           
       },
       {
-        path: '/read/:id/:cap',
+        path: '/read/:id',
         name: 'read',
         components: {
           main: () => import('pages/read.vue'),                

@@ -64,7 +64,7 @@
       <p class="text-gray-50 mt-9">Chapters:</p>
       <ul>
         <li :key="chapter" v-for="chapter in chapters" class="text-main">
-          <router-link :to="`/read/${manga.data.id}/${chapter}`">
+          <router-link :to="`/read/${manga.data.id}`">
             <div
               class="cursor-pointer bg-main-secondary mt-2 grid h-12 w-5/6"
               @click="read(chapter)"
@@ -104,8 +104,9 @@ export default {
       return obj != obj.none;
     },
     read(chapter){
-      this.$store.dispatch('chapters/getMangaChapter', { sort: `?manga=${this.manga.data.id}&chapter=${chapter}&limit=1` }).then(() => {
-        this.$router.replace(`/read/${this.manga.data.id}/${chapter}`)
+      localStorage.setItem('chapterToRead', chapter);
+
+      this.$store.dispatch('chapters/getMangaChapter', { sort: `?manga=${this.manga.data.id}&chapter=${chapter}&limit=1` }).then(() => {  
       })
     },  
     async getMangaInfo(){

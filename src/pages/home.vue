@@ -1,23 +1,8 @@
 <template>
   <div>
-    <!-- Most Viewed -->
-    <section class="w-11/12 m-auto relative">
-      <div class="m-auto mb-5 absolute rounded-md w-max p-2 mt-2 left-5">
-        <p class="font-semi-bold text-gray-50 text-2xl">Most Viewed</p>
-        <p class="w-10 border-b-2 border-main-secondary"></p>
-      </div>
-
-      <div
-        class="bg-gray-900 w-full m-auto h-96 mb-6 bg-center bg-contain bg-no-repeat"
-        :style="`background-image: url('${banner}')`"
-      >
-        <img :src="banner" class="w-full h-full" alt="">
-      </div>
-    </section>
-
     <!--Latest Updates-->
     <div class="w-11/12 m-auto mb-5 grid">
-      <p class="text-gray-50 text-2xl">Latest Updates</p>
+      <p class="text-gray-50 text-lg">Latest Updates</p>
       <p class="w-10 border-b-2 border-main-secondary"></p>
     </div>
     <section
@@ -33,22 +18,22 @@
         <manga-card
           :manga="manga"
           :hasChapter="true"
-          :routePath="`/read/${manga.mangaId}/${manga.data.attributes.chapter}`"
+          :routePath="`/read/${manga.mangaId}`"
         />
       </div>
     </section>
 
     <section v-else class="h-80 w-full grid place-items-center">
       <q-spinner color="primary" size="3em" :thickness="2" />
-    </section>
+    </section>    
 
     <!-- More Readed -->
     <div class="w-11/12 m-auto mb-5 mt-10">
-      <p class="text-gray-50 text-2xl">Read now</p>
+      <p class="text-gray-50 text-lg">Read now</p>
       <p class="w-10 border-b-2 border-main-secondary"></p>
     </div>
     <section
-      class="grid  grid-cols-1 w-11/12 m-auto sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
+      class="grid grid-cols-1 w-11/12 m-auto sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
       v-if="moreReaded.length > 0"
     >
       <div
@@ -71,32 +56,24 @@
 </template>
 
 <script>
-import bnh from "../assets/BNH.jpeg";
-import opm from "../assets/OPM.jpg";
-import solo from "../assets/frame1.png";
-
 import mangaCard from "../components/mangaCard.vue";
 
 export default {
   name: "home",
   components: { mangaCard },
-  data() {73
+  data() {
     return {
-      $q: {},
       mangas: [],
       cssInfo: "background-color: black; color: #41b883",
       chapter: "",
-      bannerImages: [bnh, solo, opm],
-      banner: "",
-      count: 0,
       moreReaded: [],
     };
   },
   methods: {
     readManga(manga) {
-      console.log("READ MANGA");
-      console.log("YEAH");
+      localStorage.setItem('chapterToRead', manga.data.attributes.chapter)
       this.$store.dispatch("manga/readManga", manga);
+
     },
     replaceTitle(title) {
       return title.replace(/(\s)/g, "-");
@@ -104,7 +81,7 @@ export default {
   },
   mounted() {
     this.$store
-      .dispatch("manga/getMangaList", { query: "?limit=12&offset=0" }).then(() => {
+      .dispatch("manga/getMangaList", { query: "?limit=8&offset=0" }).then(() => {
         this.moreReaded = this.$store.state.manga.mangaList;
         console.log("MORE READED", this.moreReaded);
       });
@@ -112,8 +89,7 @@ export default {
     this.$store.dispatch("chapters/getLatestUpdates", {sort: "?limit=12&order[publishAt]=desc" }).then((resp) => {
         this.mangas = resp;
 
-        this.mangas.map((manga) => {
-          manga.mangaId = manga.relationships[1].id;
+        this.mangas.map((manga) => {          
           if (manga.data.attributes.title == null) {
             this.$store.dispatch("manga/getManga", {query: `/${manga.relationships[1].id}`,})
               .then((resp) => {
@@ -123,15 +99,7 @@ export default {
         });
 
         console.log("LATEST UPDATES", this.mangas);
-      });
-
-    setInterval(() => {
-      let qtdImages = this.bannerImages.length - 1;
-
-      this.count >= qtdImages ? (this.count = 0) : this.count++;
-
-      this.banner = this.bannerImages[this.count];
-    }, 5000);
+    });
   },
 };
 </script>
