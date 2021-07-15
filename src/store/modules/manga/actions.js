@@ -35,8 +35,6 @@ export default {
                 }
             })
         }
-        
-        console.log('Mangas home ',mangas);
 
         commit('setMangaList',  {data: mangas});
     },

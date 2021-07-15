@@ -1,6 +1,6 @@
 <template>
   <div class="grid w-full">
-    <section class="w-11/12 h-auto p-2 m-auto text-gray-50 border-t-2 ">
+    <section class="sticky bg-main top-0   mb-9 w-11/12 h-auto p-2 m-auto text-gray-50 border-t-2 ">
       <!-- Title/Chapters -->
       <div class="flex justify-around items-center">
         <button
@@ -9,7 +9,12 @@
         >
           Previous Chapter
         </button>
-
+        <button
+          @click="readingMode('TB')"          
+          class="ring ring-white focus:ring-main-secondary focus-within:ring-main-secondary ring-opacity-80 ml-2 w-auto p-2 text-gray-50 rounded"
+        >
+          Top > Bottom
+        </button>
         <div
           class=" text-center font-semibold mt-3 flex flex-col items-center border-radius-2 "
           v-if="mangaInfo.data"
@@ -25,34 +30,21 @@
             class="border-b-2 border-main-secondary w-14 text-center mt-2 "
           ></p>
         </div>
-
-        <button
-          @click="nextChapter()"
-          class="max-h-9 bg-main-secondary text-main rounded-sm w-auto p-2 ml-2"
-        >
-          Next Chapter
-        </button>
-      </div>
-    </section>
-
-    <!-- Reading Mode -->
-    <div class="fixed -bottom-24  hover:-translate-y-24  left-2/4 transform -translate-x-1/2 p-5 mt-4 border-t-4 border-main-secondary text-center text-sm rounded-md text-gray-50 bg-main">
-      <p class="mb-4">Reading Mode</p> 
-      <span>
-        <button
-          @click="readingMode('TB')"
-          class="ring ring-white focus:ring-main-secondary focus-within:ring-main-secondary ring-opacity-80 ml-2 w-auto p-2 text-gray-50 rounded"
-        >
-          Top > Bottom
-        </button>
         <button
           @click="readingMode('LR')"
           class="ring ring-white focus:ring-main-secondary focus-within:ring-main-secondary ring-opacity-80 ml-2 w-auto p-2 text-gray-50 rounded"
         >
           Left > Right
         </button>
-      </span>
-    </div>
+
+        <button
+          @click="nextChapter()"
+          class="max-h-9 bg-main-secondary text-main rounded-sm w-auto p-2 ml-2"
+        >
+          Next Chapter
+        </button>        
+      </div>
+    </section>
 
     <section
       v-if="mode == 'TB'"
@@ -95,6 +87,7 @@ export default {
       mangaInfo: {},
       mangaId: this.$route.params.id,
       chapter: localStorage.getItem("chapterToRead"),
+      language: localStorage.getItem('language'),
       mode: "TB",
       imagePosition: 0,
       endChapter: false,
@@ -111,7 +104,7 @@ export default {
       });
     this.$store
       .dispatch("chapters/getMangaChapter", {
-        sort: `?manga=${this.mangaId}&chapter=${this.chapter}&limit=1`
+        sort: `?manga=${this.mangaId}&chapter=${this.chapter}&limit=1&translatedLanguage[]=${this.language}`
       })
       .then(() => {
         this.chapterImages = this.$store.state.chapters.chapterImages;

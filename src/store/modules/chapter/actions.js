@@ -22,15 +22,15 @@ export default {
             })        
         });
         
-        let covers = await dispatch('getCovers', { query: coverIds});                        
+        let covers = await dispatch('getCovers', { query: coverIds });                        
 
         covers.forEach(cover => {
-            cover.relationships.filter(cover_relation => {
+            cover.relationships.forEach(cover_relation => {
                 if(cover_relation.type == 'manga'){
                     mangas.forEach(manga => {
-                        manga.relationships.filter(manga_relation => {
+                        manga.relationships.forEach(manga_relation => {
                             if(manga_relation.type == 'manga' && manga_relation.id == cover_relation.id) 
-                                manga.cover = `https://uploads.mangadex.org/covers/${manga_relation.id}/${cover.data.attributes.fileName}`                                                             
+                                manga.cover = `https://uploads.mangadex.org/covers/${manga_relation.id}/${cover.data.attributes.fileName}`                                                                                             
                         });                                                
                     })                        
                 }             
