@@ -1,5 +1,7 @@
 <template>
   <div>
+    <!--  -->
+    <div class="m-auto w-11/12 h-82 bg-gray-900 mt-2 mb-4"></div>
     <!--Latest Updates-->
     <div class="w-11/12 m-auto mb-5 grid">
       <p class="text-gray-50 text-lg">Latest Updates</p>
@@ -73,15 +75,13 @@ export default {
     readManga(manga) {
       localStorage.setItem('chapterToRead', manga.data.attributes.chapter)
       this.$store.dispatch("manga/readManga", manga);
-
     },
     replaceTitle(title) {
       return title.replace(/(\s)/g, "-");
     },
   },
   mounted() {
-    this.$store
-      .dispatch("manga/getMangaList", { query: "?limit=8&offset=0" }).then(() => {
+    this.$store.dispatch("manga/getMangaList", { query: "?limit=8&offset=0" }).then(() => {
         this.moreReaded = this.$store.state.manga.mangaList;
         console.log("MORE READED", this.moreReaded);
       });
@@ -97,9 +97,10 @@ export default {
               });
           }
         });
-
         console.log("LATEST UPDATES", this.mangas);
     });
+
+    
   },
 };
 </script>

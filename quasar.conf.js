@@ -24,6 +24,10 @@ module.exports = function (/* ctx */) {
       'axios',
     ],
 
+    htmlVariables: {
+      title: 'Manga Reader',      
+    },
+
     // https://v1.quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
     css: [
       'app.scss'
