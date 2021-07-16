@@ -1,6 +1,6 @@
 <template>
   <div class="grid w-full">
-    <section class="sticky bg-main top-0   mb-9 w-11/12 h-auto p-2 m-auto text-gray-50 border-t-2 ">
+    <section class="sticky bg-main top-0 min-w-600  mb-9 w-11/12 h-auto p-2 m-auto text-gray-50 border-t-2 ">
       <!-- Title/Chapters -->
       <div class="flex justify-around items-center">
         <button
@@ -91,7 +91,6 @@ export default {
       mode: "TB",
       imagePosition: 0,
       endChapter: false,
-      chapterCompleted: false,
       chapters: []
     };
   },
@@ -164,7 +163,6 @@ export default {
         .then(() => {
           let chapters = this.$store.state.manga.mangaChapters.volumes;
 
-          console.log(chapters);
           for (let index in chapters) {
             for (let index2 in chapters[index].chapters) {
               if (chapters[index].chapters[index2].chapter != "none") {

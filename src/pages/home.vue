@@ -89,14 +89,9 @@ export default {
 
       //forEach não funciona em operações assíncronas!
       for(let index in this.latestUpdates){
-        if (this.latestUpdates[index].data.attributes.title == null) {
-          for(var relation of this.latestUpdates[index].relationships){
-            if (relation.type == "manga") {           
-              this.$store.dispatch("manga/getManga", { query: `/${relation.id}` }).then(resp =>               
-                this.latestUpdates[index].data.attributes.title = resp.data.attributes.title.en
-              )
-            }
-          }
+        if (this.latestUpdates[index].data.attributes.title == null) {                              
+          this.$store.dispatch("manga/getManga", { query: `/${this.latestUpdates[index].mangaId}` })
+          .then(resp => this.latestUpdates[index].data.attributes.title = resp.data.attributes.title.en)                                    
         }
       }
     });    

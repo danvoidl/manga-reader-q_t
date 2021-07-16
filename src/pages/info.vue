@@ -1,8 +1,11 @@
 <template>
   <div>
-    <div class="h-80 z-20 filter blur-sm ">
-      <q-parallax v-if="imgReady" :src="manga.cover" :speed="1" class="bg-top">
-      </q-parallax>
+    <div class="h-80 z-20 filter blur-sm">
+      <!-- <q-parallax v-if="imgReady" :src="manga.cover"> -->
+      <!-- </q-parallax> -->
+      <!-- <img :src="manga.cover" alt=""> -->
+      <div v-if="imgReady" class="bg-fixed bg-center bg-no-repeat bg-cover min-h-full" :style="{'background-image': `url('${manga.cover}')`}"></div>
+      
     </div>
     <section class="relative bg-main flex flex-col mt-22" v-if="imgReady">
       <div class="absolute left-6 -top-32 text-gray-900">
@@ -76,7 +79,7 @@
             <q-card class="bg-grey-9">
               <q-card-section>
                 <ul v-if="hasScanlationGroups" class="grid grid-cols-3 gap-2 justify-items-center">
-                  <li @click="read(chapter, group.language)" :key="group.id" v-for="group in scanlation_groups" class="cursor-pointer mt-2 mb-2 bg-main-secondary uppercase text-main w-12 grid place-items-center rounded-sm  h-8" >                    
+                  <li @click="read(chapter, group.language)" :key="group.language" v-for="group in scanlation_groups" class="cursor-pointer mt-2 mb-2 bg-main-secondary uppercase text-main w-12 grid place-items-center rounded-sm  h-8" >                    
                     {{group.language}}
                   </li>
                 </ul>
