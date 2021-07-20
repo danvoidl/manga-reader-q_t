@@ -20,7 +20,7 @@
           v-if="mangaInfo.data"
         >
           <router-link
-            class="hover:text-main-secondary"
+            class="hover:text-main-secondary overflow-ellipsis"
             :to="`/info/${this.mangaId}`"
           >
             {{ mangaInfo.data.attributes.title.en }} <br />
@@ -52,7 +52,7 @@
       class="bg-main h-full"
     >
       <img
-        class="max-w-3xl m-auto w-full mt-2 "
+        class="max-w-3xl m-auto w-auto mt-2 "
         :key="image"
         v-for="image in chapterImages"
         :src="image"

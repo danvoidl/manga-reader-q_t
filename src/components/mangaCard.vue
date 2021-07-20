@@ -16,16 +16,12 @@
         v-if="hasChapter && manga.data.attributes.title != null"
       >
         {{
-          manga.data.attributes.title.length > 30
-            ? `${manga.data.attributes.title.substring(0, 30)}...`
-            : manga.data.attributes.title
+          manga.data.attributes.title | truncate(30)
         }}
       </span>
       <span v-else-if='manga.data.attributes.title != null' class="text-center text-gray-50 break-all overflow-hidden p-1 font-sans font-medium">
         {{
-          manga.data.attributes.title.en.length > 30
-            ? `${manga.data.attributes.title.en.substring(0, 30)}...`
-            : manga.data.attributes.title.en
+          manga.data.attributes.title.en | truncate(30)
         }}
       </span>
     </div>

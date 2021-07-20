@@ -1,76 +1,96 @@
 <template>
   <div>
+    <!--Parallax-->
     <div class="h-80 z-20 filter blur-sm">
       <div v-if="imgReady" class="bg-fixed bg-center bg-no-repeat bg-cover min-h-full" :style="{'background-image': `url('${manga.cover}')`}"></div>   
     </div>
-    <section class="relative bg-main flex flex-col mt-22" v-if="imgReady">
-      <div class="absolute left-6 -top-32 text-gray-900">
-        <img
-          v-if="imgReady"
-          :src="manga.cover"
-          class="h-96 max-w-  bg-main-secondary "
-          alt=""
-        />
 
-        <!-- Manga Status -->
-        <p
-          v-if="manga.data.attributes.status == 'ongoing'"
-          class="w-32 h-6 mt-3 bg-green-400 rounded-md text-center"
-        >
-          Status: {{ manga.data.attributes.status }}
-        </p>
-        <p
-          v-else
-          class="w-32 h-6 mt-3 bg-yellow-300 rounded-md text-center"
-        ></p>
+    <!-- Container all -->
+    <section class="relative bg-main flex flex-col mt-22 items-center " v-if="imgReady">
+      
+      <!--Container info-->
+      <section class=" grid grid-cols-1 grid-rows-2 middle:grid-cols-4 middle:grid-rows-1  mb-0">      
+        <!--Image container-->
+        <div class="text-gray-900 m-auto ">
+          <img
+            v-if="imgReady"
+            :src="manga.cover"
+            class="h-auto max-h-96 bg-main-secondary -mt-16 "
+          />
 
-        <!-- Typeof Reading -->
-        <p class="w-32 h-6 mt-3 bg-green-400 rounded-md text-center">
-          Type: {{ manga.data.type }}
-        </p>
-      </div>
+          <!-- Manga Status -->
+          <div class="m-auto flex">
+            <!--Status-->
+            <p
+            v-if="manga.data.attributes.status == 'ongoing'"
+            class="w-32 h-6 mt-3 mr-2 bg-green-400 rounded-md text-center"
+            >
+              Status: {{ manga.data.attributes.status }}
+            </p>
+            <p
+            v-else
+            class="w-32 h-6 mt-3 mr-2  bg-yellow-300 rounded-md text-center"
+            >
+              None
+            </p>
 
-      <div class="ml-80 text-gray-50 top-6">
-        <p class="font-bold text-3xl mt-2">
-          {{ manga.data.attributes.title.en }}
-        </p>
-        <p class="mt-2 border border-b-2 border-main-secondary w-20"></p>
-        <p class="mt-5 w-2/3">
-          {{
-            manga.data.attributes.description.en.length > 600
-              ? `${manga.data.attributes.description.en.substring(0, 600)}...`
-              : manga.data.attributes.description.en
-          }}
-        </p>
-
-        <!-- GENRES -->
-        <div class="flex mt-6 w-11/12 ">
-          <p class="mr-4 text-center">Genres:</p>
-          <div
-            class="w-32 h-6 ml-2 mb-2 bg-gray-50 rounded-md text-black-main text-center"
-            :key="genre.id"
-            v-for="genre in genres"
-          >
-            {{ genre.attributes.name.en }}
+            <!-- Typeof Reading -->
+            <p class="w-32 h-6 mt-3 bg-green-400 rounded-md text-center ">
+              Type: {{ manga.data.type }}
+            </p>
           </div>
         </div>
 
-        <!-- THEMES -->
-        <div class="flex mt-3 w-11/12">
-          <p class="mr-4 text-center">Themes:</p>
-          <div
-            class="w-32 h-6 ml-2 mb-2 bg-gray-50 rounded-md text-black-main text-center"
-            :key="theme.id"
-            v-for="theme in themes"
-          >
-            {{ theme.attributes.name.en }}
-          </div>
-        </div>
-      </div>
+        <!-- Title\Description-->
+        <div class="text-gray-50 middle:col-start-2 middle:col-end-5 mt-4 m-auto p-2  ">
+                 
+          <!--Title-->
+          <p class="font-bold text-3xl mt-2 w-max  m-auto middle:m-0">
+            {{ manga.data.attributes.title.en }}
+          </p>
+          <p class="mt-2 border border-b-2 border-main-secondary w-20 m-auto middle:m-0" />
 
-      <div class="ml-6 mt-20">
-        <p class="text-gray-50 mt-9">Chapters:</p>
-        <q-list dark padding bordered class="rounded-borders" style="max-width: 328px">
+          <!--Description-->
+          <p class="mt-5 text-center middle:text-left">
+            {{
+              manga.data.attributes.description.en | truncate(600)
+            }}
+          </p>
+
+          <section class="text-center">
+            <!-- GENRES -->
+            <div class="flex mt-6 justify-center middle:justify-start">
+            <p class="mr-4 text-center">Genres:</p>
+            <div
+              class="w-32 h-6 ml-2 mb-2 bg-gray-50 rounded-md text-black-main text-center"
+              :key="genre.id"
+              v-for="genre in genres"
+            >
+              {{ genre.attributes.name.en }}
+            </div>
+            </div>
+
+            <!-- THEMES -->
+            <div class="flex mt-3 justify-center middle:justify-start ">
+            <p class="mr-4 text-center">Themes:</p>
+            <div
+              class="w-32 h-6 ml-2 mb-2 bg-gray-50 rounded-md text-black-main text-center"
+              :key="theme.id"
+              v-for="theme in themes"
+            >
+              {{ theme.attributes.name.en }}
+            </div>
+            </div>
+          </section>
+          
+        </div>
+
+      </section>
+
+      <!--Chapters-->
+      <div class="mt-0 middle:mt-0">
+        <p class="text-gray-50 mt-9 text-center mb-5">Chapters:</p>
+        <q-list dark padding bordered class="rounded-borders" style="min-width: 500px">
           <q-expansion-item @click="loadLanguageInfo(chapter)" :key="chapter" v-for="chapter in chapters" :label="`Chapter: ${chapter}`">
             <q-card class="bg-grey-9">
               <q-card-section>
@@ -141,7 +161,7 @@ export default {
 
         this.hasScanlationGroups = true;
         this.scanlation_groups = scanlation_groups;
-        
+
         console.log(this.scanlation_groups);
       });
     },

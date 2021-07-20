@@ -5,7 +5,8 @@ module.exports = {
   darkMode: false, // or 'media' or 'class'
   theme: {
     screens: {
-      'cellphone': '500px',      
+      'cellphone': '500px',   
+      'middle': '900px',   
       ...defaultTheme.screens
     },    
     boxShadow: {      
@@ -29,6 +30,9 @@ module.exports = {
         '82': '21rem',
         '73': '18.5rem',
         '720': '720px'
+      },
+      margin: {
+        '10p': '10%'
       }
     },    
   },
