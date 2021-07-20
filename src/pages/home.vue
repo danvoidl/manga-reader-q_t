@@ -11,7 +11,7 @@
       v-if="latestUpdates.length > 0"
     >
       <div
-        class="w-48 h-72 focus-within bg-green-50 rounded-md shadow-md-b relative flex-shrink-0 "
+        class="cursor-pointer w-48 h-72 focus-within bg-green-50 rounded-md shadow-md-b relative flex-shrink-0 "
         :key="index"
         v-for="(manga, index) in latestUpdates"
         @click="readManga(manga)"
@@ -19,7 +19,6 @@
         <manga-card
           :manga="manga"
           :hasChapter="true"
-          :routePath="`/read/${manga.mangaId}`"
         />
       </div>
     </section>
@@ -41,7 +40,7 @@
         class="w-48 h-72 bg-green-50 rounded-md shadow-md-b relative flex-shrink-0"
         :key="index"
         v-for="(manga, index) in moreReaded"
-        @click="readManga(manga)"
+        @click="infoManga(manga)"
       >
         <manga-card
           :manga="manga"
@@ -72,7 +71,12 @@ export default {
   methods: {
     readManga(manga) {
       localStorage.setItem("chapterToRead", manga.data.attributes.chapter);
-      this.$store.dispatch("manga/readManga", manga);
+      localStorage.setItem('language', manga.data.attributes.translatedLanguage);
+
+      this.$router.push({path: `/read/${manga.mangaId}`})
+    },
+    infoManga(manga){
+      this.$router.push({path: `/info/${manga.data.id}`})
     }
   },
   mounted() {

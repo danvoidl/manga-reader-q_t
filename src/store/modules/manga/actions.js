@@ -26,9 +26,9 @@ export default {
         covers = covers.results
 
         for(let index in mangas){
-            covers[index].relationships.filter((relation) => {
+            covers[index].relationships.forEach(relation => {
                 if(relation.type == 'manga' ) {
-                    mangas.filter((manga) => {
+                    mangas.forEach(manga => {
                         if(manga.data.id == relation.id) 
                             manga.cover = `https://uploads.mangadex.org/covers/${relation.id}/${covers[index].data.attributes.fileName}` 
                     })

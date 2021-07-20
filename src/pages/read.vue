@@ -131,18 +131,13 @@ export default {
         this.image = this.chapterImages[this.imagePosition];
 
         document.addEventListener("keydown", event => {
-          if (
-            event.code == "ArrowRight" &&
-            this.imagePosition < this.chapterImages.length - 1
-          ) {
+          if ( event.code == "ArrowRight" && this.imagePosition < this.chapterImages.length - 1 ) {
             scroll(0, 0)
             this.imagePosition++;
-          }
-          if (event.code == "ArrowLeft" && this.imagePosition > 0) {
+          } else if (event.code == "ArrowLeft" && this.imagePosition > 0) {
             this.imagePosition--;
             scroll(0, 0)
-          }
-          if (this.chapterImages.length - 1 >= this.imagePosition) {
+          } else if (this.chapterImages.length - 1 >= this.imagePosition) {
             this.chapterCompleted = true;
           }
 
