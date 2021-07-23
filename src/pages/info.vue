@@ -11,15 +11,15 @@
       <!--Container info-->
       <section class=" grid grid-cols-1 grid-rows-2 middle:grid-cols-4 middle:grid-rows-1  mb-0">      
         <!--Image container-->
-        <div class="text-gray-900 m-auto ">
+        <div class="text-gray-900 m-auto  max-h-72 ">
           <img
             v-if="imgReady"
             :src="manga.cover"
-            class="h-auto max-h-96 bg-main-secondary -mt-16 "
+            class="h-auto max-h-96 bg-main-secondary -mt-56 middle:-mt-16 "
           />
 
           <!-- Manga Status -->
-          <div class="m-auto flex">
+          <div class="m-auto flex mt-0 mb-0">
             <!--Status-->
             <p
             v-if="manga.data.attributes.status == 'ongoing'"
