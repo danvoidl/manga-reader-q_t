@@ -6,7 +6,7 @@
       v-if="hasChapter"
     >
       <p>{{ manga.data.attributes.chapter }}</p>
-      <img class="h-7" :src="`https://mangadex.org/flags/${manga.data.attributes.translatedLanguage == 'en' ? 'us' : manga.data.attributes.translatedLanguage}.svg`" alt="">
+      <!-- <img class="h-7" :src="`https://mangadex.org/flags/${manga.data.attributes.translatedLanguage == 'en' ? 'us' : manga.data.attributes.translatedLanguage}.svg`" alt=""> -->
     </span>
     <div
       class="absolute bottom-0 w-full h-14 bg-main bg-opacity-90 rounded-sm grid place-items-center"

@@ -8,9 +8,11 @@
       v-model="mangaName"
       @keyup="callSearch()"
     />
+
     <span v-if="loadingResults" class="material-icons w-4 h-4 absolute left-2.5 top-2 lg:text-black cursor-pointer" @click="closeResults()">
       close
     </span>
+
     <svg
       v-else
       class="w-4 h-4 absolute left-2.5 top-2 lg:text-black"
@@ -25,7 +27,8 @@
         stroke-width="2"
         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
       />
-    </svg
+    </svg>
+
     <div v-if="loadingResults">
       <div class=" h-auto max-h-96 overflow-auto w-82 bg-main absolute left-0 -bottom-auto mt-2 rounded-sm">
         <div class="" :key='result.data.id' v-for="result in searchResults">
@@ -37,23 +40,60 @@
               {{result.data.attributes.title.en }}            
             </p>
           </router-link>
-        </div>
         </div>                            
       </div>
     </div>
+  </div>
 </template>
 
 <script>
 export default {
-    data(){
-        return {
-            showMenu: false,
-            loadingResults: false,
-            searchTimer: null,
-            searchResults: [],
-            mangaName: ''
-        }
+  data(){
+    return {
+      showMenu: false,
+      loadingResults: false,
+      searchTimer: null,
+      searchResults: [],
+      mangaName: ''
     }
+  },
+  methods: {    
+    cleanSearch(){
+      this.mangaName = ''
+      this.loadingResults = false
+      this.searchResults = []
+    },
+    closeResults(){
+      this.loadingResults = false
+      this.searchResults = []
+    },
+    callSearch(event){            
+      clearTimeout(this.searchTimer)
+
+      this.searchTimer = setTimeout(() => {
+        if(this.mangaName.length > 0){
+          this.searchFor()
+        }
+      }, 500)
+    },
+    async searchFor() {      
+      this.$store.dispatch('manga/getManga', {query: `?title=${this.mangaName}`}).then((resp) => {
+        let results = resp.results;
+        
+        results.filter((result) => {          
+          this.$store.dispatch('manga/getCover', { data: {mangaId: result.data.id, coverId: result.relationships[result.relationships.length - 1].id}}).then((resp) => {
+            result.cover = resp;
+          })  
+        })
+        
+        setTimeout(() => {
+          this.searchResults = results;
+          this.loadingResults = true;
+          console.log('Search Results', this.searchResults);
+        }, 500)
+      })            
+    },    
+  },
 }
 </script>
 

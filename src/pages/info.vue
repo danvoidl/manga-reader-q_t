@@ -42,10 +42,10 @@
         </div>
 
         <!-- Title\Description-->
-        <div class="text-gray-50 middle:col-start-2 middle:col-end-5 mt-4 m-auto p-2  ">
+        <div class="text-gray-50 middle:col-start-2 middle:col-end-5 mt-4 m-auto p-2 ">
                  
           <!--Title-->
-          <p class="font-bold text-3xl mt-2 w-max  m-auto middle:m-0">
+          <p class="font-bold text-3xl mt-2 w-auto text-center  m-auto middle:m-0">
             {{ manga.data.attributes.title.en }}
           </p>
           <p class="mt-2 border border-b-2 border-main-secondary w-20 m-auto middle:m-0" />
@@ -88,9 +88,9 @@
       </section>
 
       <!--Chapters-->
-      <div class="mt-0 middle:mt-0">
+      <div class="mt-0 middle:mt-0 w-11/12">
         <p class="text-gray-50 mt-9 text-center mb-5">Chapters:</p>
-        <q-list dark padding bordered class="rounded-borders" style="min-width: 500px">
+        <q-list dark padding bordered class="rounded-borders" style="max-width: 500px;">
           <q-expansion-item @click="loadLanguageInfo(chapter)" :key="chapter" v-for="chapter in chapters" :label="`Chapter: ${chapter}`">
             <q-card class="bg-grey-9">
               <q-card-section>

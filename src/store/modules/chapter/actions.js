@@ -10,33 +10,36 @@ export default {
     },
     async getLatestUpdates({ commit, dispatch }, { sort }){
         let resp = await api.get(endpoint + sort);  
-        console.log(resp);
         let mangas = resp.results;             
         let coverIds = '';
 
         mangas.forEach(manga => {
             manga.relationships.forEach(relation => {
-                if(relation.type == 'manga' ) {
+                if(relation.type == 'manga') {
                     coverIds += `manga[]=${relation.id}&`
                     manga.mangaId = relation.id
                 }                                                      
             })        
         });
         
+        console.log(coverIds);
         let covers = await dispatch('getCovers', { query: coverIds });                        
 
         covers.forEach(cover => {
             cover.relationships.forEach(cover_relation => {
                 if(cover_relation.type == 'manga'){
+                    console.log(cover_relation)
                     mangas.forEach(manga => {
                         if(manga.mangaId == cover_relation.id){
                             manga.cover = `https://uploads.mangadex.org/covers/${cover_relation.id}/${cover.data.attributes.fileName}`                                                                                             
+                            console.log('Sasageyo');
                         } 
                     })                                                                     
                 }             
             })  
         })
-
+        
+        console.log('MANGAS',mangas);
         return mangas;
     },
     async getMangaChapter({commit}, { sort }){

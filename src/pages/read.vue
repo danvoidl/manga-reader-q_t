@@ -1,6 +1,6 @@
 <template>
   <div class="grid w-full">
-    <section class="sticky bg-main top-0 min-w-600  mb-9 w-11/12 h-auto p-2 m-auto text-gray-50 border-t-2 ">
+    <section class=" bg-red-900 w-11/12 mb-9  h-auto p-2 m-auto text-gray-50 border-t-2 ">
       <!-- Title/Chapters -->
       <div class="flex justify-around items-center">
         <button
@@ -49,10 +49,10 @@
     <section
       v-if="mode == 'TB'"
       id="container_manga"
-      class="bg-main h-full"
+      class="bg-main h-auto"
     >
       <img
-        class="max-w-3xl m-auto w-auto mt-2 "
+        class="max-w-3xl m-auto w-11/12 mt-2 "
         :key="image"
         v-for="image in chapterImages"
         :src="image"
@@ -69,12 +69,6 @@
     >
       <img class="max-w-3xl " :src="image" alt="" />
     </section>
-
-    <q-dialog v-model="endChapter">
-      <q-card>
-        <h1>End of chapter</h1>
-      </q-card>
-    </q-dialog>
   </div>
 </template>
 
