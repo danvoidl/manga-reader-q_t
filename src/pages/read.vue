@@ -1,56 +1,51 @@
 <template>
   <div class="grid w-full">
-    <section class=" bg-red-900 w-11/12 mb-9  h-auto p-2 m-auto text-gray-50 border-t-2 ">
+    <!-- Navigation -->
+    <section
+      class=" bg-red-500 w-11/12 mb-9 h-auto p-2 m-auto text-gray-50 border-t-2 grid grid-rows-2   middle:grid-rows-1 middle:grid-cols-5"
+    >
       <!-- Title/Chapters -->
-      <div class="flex justify-around items-center">
-        <button
-          @click="previousChapter()"
-          class="max-h-9 bg-main-secondary text-main rounded-sm w-auto p-2 ml-2"
+      <button
+        @click="previousChapter()"
+        class="max-h-9 bg-main-secondary text-main rounded-sm w-auto p-2 ml-2"
+      >
+        Previous Chapter
+      </button>
+      <button
+        @click="readingMode('TB')"
+        class="max-h-9 ring ring-white focus:ring-main-secondary focus-within:ring-main-secondary ring-opacity-80 ml-2 w-auto p-2 text-gray-50 rounded"
+      >
+        Top > Bottom
+      </button>
+      <div
+        class=" text-center font-semibold mt-3 flex flex-col items-center border-radius-2 "
+        v-if="mangaInfo.data"
+      >
+        <router-link
+          class="hover:text-main-secondary overflow-ellipsis"
+          :to="`/info/${this.mangaId}`"
         >
-          Previous Chapter
-        </button>
-        <button
-          @click="readingMode('TB')"          
-          class="ring ring-white focus:ring-main-secondary focus-within:ring-main-secondary ring-opacity-80 ml-2 w-auto p-2 text-gray-50 rounded"
-        >
-          Top > Bottom
-        </button>
-        <div
-          class=" text-center font-semibold mt-3 flex flex-col items-center border-radius-2 "
-          v-if="mangaInfo.data"
-        >
-          <router-link
-            class="hover:text-main-secondary overflow-ellipsis"
-            :to="`/info/${this.mangaId}`"
-          >
-            {{ mangaInfo.data.attributes.title.en }} <br />
-          </router-link>
-          <p class="font-extralight">Chapter: {{ this.chapter }}</p>
-          <p
-            class="border-b-2 border-main-secondary w-14 text-center mt-2 "
-          ></p>
-        </div>
-        <button
-          @click="readingMode('LR')"
-          class="ring ring-white focus:ring-main-secondary focus-within:ring-main-secondary ring-opacity-80 ml-2 w-auto p-2 text-gray-50 rounded"
-        >
-          Left > Right
-        </button>
-
-        <button
-          @click="nextChapter()"
-          class="max-h-9 bg-main-secondary text-main rounded-sm w-auto p-2 ml-2"
-        >
-          Next Chapter
-        </button>        
+          {{ mangaInfo.data.attributes.title.en }} <br />
+        </router-link>
+        <p class="font-extralight">Chapter: {{ this.chapter }}</p>
+        <p class="border-b-2 border-main-secondary w-14 text-center mt-2 "></p>
       </div>
+      <button
+        @click="readingMode('LR')"
+        class="max-h-9 ring ring-white focus:ring-main-secondary focus-within:ring-main-secondary ring-opacity-80 ml-2 w-auto p-2 text-gray-50 rounded"
+      >
+        Left > Right
+      </button>
+
+      <button
+        @click="nextChapter()"
+        class="max-h-9 bg-main-secondary text-main rounded-sm w-auto p-2 ml-2"
+      >
+        Next Chapter
+      </button>
     </section>
 
-    <section
-      v-if="mode == 'TB'"
-      id="container_manga"
-      class="bg-main h-auto"
-    >
+    <main v-if="mode == 'TB'" id="container_manga" class="bg-main h-auto">
       <img
         class="max-w-3xl m-auto w-11/12 mt-2 "
         :key="image"
@@ -58,7 +53,7 @@
         :src="image"
         alt=""
       />
-    </section>
+    </main>
 
     <section
       v-else
@@ -81,7 +76,7 @@ export default {
       mangaInfo: {},
       mangaId: this.$route.params.id,
       chapter: localStorage.getItem("chapterToRead"),
-      language: localStorage.getItem('language'),
+      language: localStorage.getItem("language"),
       mode: "TB",
       imagePosition: 0,
       endChapter: false,
@@ -125,12 +120,15 @@ export default {
         this.image = this.chapterImages[this.imagePosition];
 
         document.addEventListener("keydown", event => {
-          if ( event.code == "ArrowRight" && this.imagePosition < this.chapterImages.length - 1 ) {
-            scroll(0, 0)
+          if (
+            event.code == "ArrowRight" &&
+            this.imagePosition < this.chapterImages.length - 1
+          ) {
+            scroll(0, 0);
             this.imagePosition++;
           } else if (event.code == "ArrowLeft" && this.imagePosition > 0) {
             this.imagePosition--;
-            scroll(0, 0)
+            scroll(0, 0);
           } else if (this.chapterImages.length - 1 >= this.imagePosition) {
             this.chapterCompleted = true;
           }

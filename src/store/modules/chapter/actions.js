@@ -22,17 +22,14 @@ export default {
             })        
         });
         
-        console.log(coverIds);
         let covers = await dispatch('getCovers', { query: coverIds });                        
 
         covers.forEach(cover => {
             cover.relationships.forEach(cover_relation => {
                 if(cover_relation.type == 'manga'){
-                    console.log(cover_relation)
                     mangas.forEach(manga => {
                         if(manga.mangaId == cover_relation.id){
                             manga.cover = `https://uploads.mangadex.org/covers/${cover_relation.id}/${cover.data.attributes.fileName}`                                                                                             
-                            console.log('Sasageyo');
                         } 
                     })                                                                     
                 }             
